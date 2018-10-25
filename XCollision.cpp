@@ -2,6 +2,7 @@
 #include "XIntersect.h"
 #include "XMath.h"
 #include <functional>
+#include <unordered_map>
 
 using namespace std;
 using namespace xmath;
@@ -91,11 +92,48 @@ struct _init
 {
 	_init() { init(); }
 };
-_init __;
+_init __XCollision;
 
 bool collision::check(
 	const Vec2& p0, float a0, float b0, float rot0, ColliderType t0,
 	const Vec2& p1, float a1, float b1, float rot1, ColliderType t1)
 {
 	return func[int(t0)][int(t1)](p0, a0, b0, rot0, p1, a1, b1, rot1);
+}
+
+unordered_map<string, ColliderType> _map = {
+	{"Circle", ColliderType::Circle},
+	{"OBB", ColliderType::OBB},
+	{"Ellipse", ColliderType::Ellipse},
+	{"Diamond", ColliderType::Diamond},
+	{"Triangle", ColliderType::Triangle},
+	{"Point", ColliderType::Point},
+	{"circle", ColliderType::Circle},
+	{"obb", ColliderType::OBB},
+	{"ellipse", ColliderType::Ellipse},
+	{"diamond", ColliderType::Diamond},
+	{"triangle", ColliderType::Triangle},
+	{"point", ColliderType::Point},
+};
+ColliderType collision::from_string(const std::string& str)
+{
+	const auto it = _map.find(str);
+	if (it != _map.end())
+		return it->second;
+	return ColliderType::ColliderTypeNum;
+}
+
+const char* collision::to_string(ColliderType t)
+{
+	switch (t) {
+	case ColliderType::Circle: return "circle";
+	case ColliderType::OBB: return "obb";
+	case ColliderType::Ellipse: return "ellipse";
+	case ColliderType::Diamond: return "diamond";
+	case ColliderType::Triangle: return "triangle";
+	case ColliderType::Point: return "point";
+	case ColliderType::ColliderTypeNum: ;
+	default: ;
+	}
+	return "unknown";
 }
