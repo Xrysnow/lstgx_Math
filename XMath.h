@@ -4,6 +4,9 @@
 #include "XDistance.h"
 #include "XEquation.h"
 #include "XIntersect.h"
+#include "XSpline.h"
+#include "XFFT.h"
+#include "XRandom.h"
 
 namespace xmath
 {

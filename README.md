@@ -22,3 +22,4 @@ Math and geometry support of [LuaSTG-x](https://github.com/Xrysnow/LuaSTG-x).
 * Solution of quadratic, cubic and quartic equation.
 * Fast fourier transformation based on [meow_fft](https://github.com/JodiTheTigger/meow_fft).
 * Window functions for FFT.
+* Random algorithm from [Python](https://docs.python.org/3.5/library/random.html).
