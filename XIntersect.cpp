@@ -211,19 +211,22 @@ bool intersect::Ellipse_Ellipse(
 	const auto sc = s * c;
 	const auto a_ = 1 / (a1*a1);
 	const auto b_ = 1 / (b1*b1);
-	const auto m00 = (a_ * c2 + b_ * s2) / (a0*a0);
-	const auto m11 = (b_ * c2 + a_ * s2) / (b0*b0);
-	const auto m01 = (a_ - b_)*sc / std::sqrt(a0*b0);
+	const auto m00 = (a_ * c2 + b_ * s2) * (a0*a0);
+	const auto m11 = (b_ * c2 + a_ * s2) * (b0*b0);
+	const auto m01 = (a_ - b_)*sc * (a0*b0);
 	const auto sum = m00 + m11;
 	const auto tmp = m00 - m11;
 	const auto dif = std::sqrt(tmp*tmp + 4 * m01*m01);
-	const auto cossq = (1+(m00 - m11) / dif) / 2;
-	const auto tanv = (m01 / dif) / cossq;
-	auto d = p1 - p0;
-	d.x /= a0;
-	d.y /= b0;
+	const auto tanv = 2 * m01 / (dif + m00 - m11);
+	float s0, c0;
+	SinCos(-rot0, s0, c0);
+	const auto d = p1 - p0;
+	auto d_ = Vec2(d.x*c0 - d.y*s0, d.y*c0 + d.x*s0);
+	d_.x /= a0;
+	d_.y /= b0;
 	return distance::Point_Ellipse2(
-		Vec2::ZERO, d, (sum + dif) / 2, (sum - dif) / 2, std::atan(tanv)) < 1;
+		Vec2::ZERO, d_,
+		std::sqrt(2 / (sum + dif)), std::sqrt(2 / (sum - dif)), std::atan(tanv)) < 1;
 }
 
 bool intersect::Ellipse_Diamond(const Vec2& p0, float a0, float b0, float rot0,
