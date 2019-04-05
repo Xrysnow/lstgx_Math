@@ -1,5 +1,5 @@
 ﻿#pragma once
-#include "cocos/math/Vec2.h"
+#include "math/Vec2.h"
 
 namespace xmath
 {

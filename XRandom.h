@@ -8,6 +8,7 @@ namespace xmath
 		class Random
 		{
 		public:
+
 			virtual void setSeed(uint32_t seed) = 0;
 			virtual uint32_t getSeed() = 0;
 
