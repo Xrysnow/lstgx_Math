@@ -5,7 +5,7 @@ namespace xmath
 {
 	namespace collision
 	{
-		enum class ColliderType : uint8_t
+		enum class ColliderType
 		{
 			Circle = 0,
 			OBB,
