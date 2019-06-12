@@ -2,6 +2,7 @@
 #include "XEquation.h"
 #include "XConstant.h"
 #include "XMath.h"
+#include <limits>
 
 using namespace cocos2d;
 using namespace xmath;
@@ -258,10 +259,10 @@ float distance::Point_Ellipse(const Vec2& p0,
 	const auto tmp2 = 2 * a*x;
 	const auto tmp3 = b * y;
 	auto s = SolveQuartic(1.0, (tmp2 + tmp) / tmp3, 0.0, (tmp2 - tmp) / tmp3, -1.0);
-	float ret = FLT_MAX;
+	float ret = std::numeric_limits<float>::max();
 	for (auto i = 0; i < 4; ++i)
 	{
-		if (std::abs(s[i].imag()) < FLT_EPSILON)
+		if (std::abs(s[i].imag()) < std::numeric_limits<float>::epsilon())
 		{
 			const auto t = s[i].real();
 			const auto tmp_ = 1 + t * t;
