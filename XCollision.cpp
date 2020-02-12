@@ -88,11 +88,11 @@ void init()
 	func[TPoint][TPoint] = [](PARAM) {return p0 == p1; };
 }
 
-struct _init
+struct _CollisionInit
 {
-	_init() { init(); }
+	_CollisionInit() { init(); }
 };
-static _init __XCollision;
+static _CollisionInit __CollisionInit;
 
 bool collision::check(
 	const Vec2& p0, float a0, float b0, float rot0, ColliderType t0,

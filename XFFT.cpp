@@ -1,5 +1,4 @@
 #include "XFFT.h"
-#define MEOW_FFT_IMPLEMENTAION
 #include "meow_fft.h"
 #include "XConstant.h"
 

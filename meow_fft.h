@@ -1,16 +1,17 @@
-#pragma once
 /*
-meow_fft. My Easy Oresome Wonderful Fast Fourier Transform.
-Copyright (C) 2017 Richard Maxwell <jodi.the.tigger@gmail.com>
-Permission to use, copy, modify, and/or distribute this software for any
-purpose with or without fee is hereby granted.
-THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
-WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
-MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY
-SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
-WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION
-OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN
-CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+	meow_fft. My Easy Oresome Wonderful Fast Fourier Transform.
+	Copyright (C) 2017 Richard Maxwell <jodi.the.tigger@gmail.com>
+
+	Permission to use, copy, modify, and/or distribute this software for any
+	purpose with or without fee is hereby granted.
+
+	THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+	WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+	MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY
+	SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+	WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION
+	OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN
+	CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
 #ifndef MEOW_FFT
@@ -98,7 +99,7 @@ extern "C" {
 
 #endif // MEOW_FFT
 
-#ifdef MEOW_FFT_IMPLEMENTAION
+#ifdef MEOW_FFT_IMPLEMENTATION
 
 // Reading List ----------------------------------------------------------------
 //
@@ -185,7 +186,7 @@ void meow_make_twiddles
 		w[i].r = (float)cos(MEOW_TAU * i * ni);
 		w[i].j = (float)sin(MEOW_TAU * i * ni);
 	}
-};
+}
 
 unsigned meow_make_twiddles_sequential
 (
@@ -255,7 +256,7 @@ unsigned meow_make_twiddles_sequential
 	}
 
 	return w_count;
-};
+}
 
 Meow_Stage_Info meow_calculate_stages(unsigned n, Meow_FFT_Workset* workset)
 {
@@ -309,7 +310,7 @@ Meow_Stage_Info meow_calculate_stages(unsigned n, Meow_FFT_Workset* workset)
 
 	Meow_Stage_Info result =
 	{
-		is_slow
+		  is_slow
 		, stage
 		, w_count
 	};
@@ -434,7 +435,7 @@ unsigned meow_fft_is_slow_real(const Meow_FFT_Workset_Real* workset)
 
 // -----------------------------------------------------------------------------
 
-Meow_FFT_Complex inline meow_add
+inline Meow_FFT_Complex meow_add
 (
 	const Meow_FFT_Complex lhs
 	, const Meow_FFT_Complex rhs
@@ -442,14 +443,14 @@ Meow_FFT_Complex inline meow_add
 {
 	Meow_FFT_Complex result =
 	{
-		lhs.r + rhs.r
+		  lhs.r + rhs.r
 		, lhs.j + rhs.j
 	};
 
 	return result;
 }
 
-Meow_FFT_Complex inline meow_sub
+inline Meow_FFT_Complex meow_sub
 (
 	const Meow_FFT_Complex lhs
 	, const Meow_FFT_Complex rhs
@@ -457,36 +458,36 @@ Meow_FFT_Complex inline meow_sub
 {
 	Meow_FFT_Complex result =
 	{
-		lhs.r - rhs.r
+		  lhs.r - rhs.r
 		, lhs.j - rhs.j
 	};
 
 	return result;
 }
 
-Meow_FFT_Complex inline meow_negate(const Meow_FFT_Complex lhs)
+inline Meow_FFT_Complex meow_negate(const Meow_FFT_Complex lhs)
 {
 	Meow_FFT_Complex result =
 	{
-		-lhs.r
+		  -lhs.r
 		, -lhs.j
 	};
 
 	return result;
 }
 
-Meow_FFT_Complex inline meow_conjugate(const Meow_FFT_Complex lhs)
+inline Meow_FFT_Complex meow_conjugate(const Meow_FFT_Complex lhs)
 {
 	Meow_FFT_Complex result =
 	{
-		lhs.r
+		   lhs.r
 		, -lhs.j
 	};
 
 	return result;
 }
 
-Meow_FFT_Complex inline meow_mul
+inline Meow_FFT_Complex meow_mul
 (
 	const Meow_FFT_Complex lhs
 	, const Meow_FFT_Complex rhs
@@ -494,14 +495,14 @@ Meow_FFT_Complex inline meow_mul
 {
 	Meow_FFT_Complex result =
 	{
-		(lhs.r * rhs.r) - (lhs.j * rhs.j)
+		  (lhs.r * rhs.r) - (lhs.j * rhs.j)
 		, (lhs.r * rhs.j) + (lhs.j * rhs.r)
 	};
 
 	return result;
 }
 
-Meow_FFT_Complex inline meow_mul_by_conjugate
+inline Meow_FFT_Complex meow_mul_by_conjugate
 (
 	const Meow_FFT_Complex lhs
 	, const Meow_FFT_Complex rhs
@@ -509,25 +510,25 @@ Meow_FFT_Complex inline meow_mul_by_conjugate
 {
 	Meow_FFT_Complex result =
 	{
-		(lhs.r * rhs.r) + (lhs.j * rhs.j)
+		  (lhs.r * rhs.r) + (lhs.j * rhs.j)
 		, (lhs.j * rhs.r) - (lhs.r * rhs.j)
 	};
 
 	return result;
 }
 
-Meow_FFT_Complex inline meow_mul_by_j(const Meow_FFT_Complex lhs)
+inline Meow_FFT_Complex meow_mul_by_j(const Meow_FFT_Complex lhs)
 {
 	Meow_FFT_Complex result =
 	{
-		-lhs.j
+		  -lhs.j
 		,  lhs.r
 	};
 
 	return result;
 }
 
-Meow_FFT_Complex inline meow_mulf
+inline Meow_FFT_Complex meow_mulf
 (
 	const Meow_FFT_Complex lhs
 	, float            rhs
@@ -535,7 +536,7 @@ Meow_FFT_Complex inline meow_mulf
 {
 	Meow_FFT_Complex result =
 	{
-		lhs.r * rhs
+		  lhs.r * rhs
 		, lhs.j * rhs
 	};
 
@@ -558,7 +559,7 @@ void meow_dft_n_dit
 	// Can I do something with the knowledge that n is always odd?
 
 	//Meow_FFT_Complex scratch[radix];
-	Meow_FFT_Complex* scratch = new Meow_FFT_Complex[radix];
+	Meow_FFT_Complex* scratch = (Meow_FFT_Complex*)malloc(radix * sizeof(Meow_FFT_Complex));
 
 	for (unsigned butterfly = 0; butterfly < count; ++butterfly)
 	{
@@ -602,7 +603,7 @@ void meow_dft_n_dit
 		}
 	}
 
-	delete[] scratch;
+	free(scratch);
 }
 
 // -----------------------------------------------------------------------------
@@ -2097,7 +2098,7 @@ void meow_recursive_fft_mixed_meow_radix_dit_i
 //
 // F(k) = Feven + (Wn(k) * Fodd) // <---- Remember ifft twiddles!, no * 0.5.
 
-void inline meow_mixer
+inline void meow_mixer
 (
 	unsigned                N_2
 	, Complex* w_2n
@@ -2136,7 +2137,7 @@ void inline meow_mixer
 	}
 }
 
-void inline meow_mixer_i
+inline void meow_mixer_i
 (
 	unsigned          N_2
 	, Complex*          w_2n
@@ -2273,7 +2274,9 @@ void meow_fft_i
 #if 0
 #!/bin/sh
 # <command> N [-1|1] [|_i]
+
 cat << EOF
+
 static void meow_radix_${ 1 }_dit${ 3 }
 (
 	meow_fft_complex* out
@@ -2282,6 +2285,7 @@ static void meow_radix_${ 1 }_dit${ 3 }
 	)
 {
 	EOF
+
 #// First loop doesn't use twiddles
 		. / gen_notw.native - n ${ 1 } -standalone - sign ${ 2 }                               \
 		| sed  's/E /float /g'                                                     \
@@ -2297,9 +2301,11 @@ static void meow_radix_${ 1 }_dit${ 3 }
 		| sed - r 's/DK\((.+), (.+)\);/static const float \1  = \2;/g'              \
 		| head - n - 3                                                               \
 		| tail - n + 9
+
 		echo ""
 		echo "out = out + 1;"
 		echo ""
+
 		. / gen_twiddle.native - n ${ 1 } -standalone - sign ${ 2 } -dit - with - ms 1            \
 		| sed  's/E /float /g'                                                     \
 		| sed 's/INT /unsigned /g'                                                 \
@@ -2319,5 +2325,7 @@ static void meow_radix_${ 1 }_dit${ 3 }
 		| sed 's/me/count/g'                                                       \
 		| head - n - 2                                                               \
 		| tail - n + 10
+
+
 		echo "}"
 #endif
