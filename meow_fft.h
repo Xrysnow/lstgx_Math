@@ -435,7 +435,7 @@ unsigned meow_fft_is_slow_real(const Meow_FFT_Workset_Real* workset)
 
 // -----------------------------------------------------------------------------
 
-inline Meow_FFT_Complex meow_add
+Meow_FFT_Complex meow_add
 (
 	const Meow_FFT_Complex lhs
 	, const Meow_FFT_Complex rhs
@@ -450,7 +450,7 @@ inline Meow_FFT_Complex meow_add
 	return result;
 }
 
-inline Meow_FFT_Complex meow_sub
+Meow_FFT_Complex meow_sub
 (
 	const Meow_FFT_Complex lhs
 	, const Meow_FFT_Complex rhs
@@ -465,7 +465,7 @@ inline Meow_FFT_Complex meow_sub
 	return result;
 }
 
-inline Meow_FFT_Complex meow_negate(const Meow_FFT_Complex lhs)
+Meow_FFT_Complex meow_negate(const Meow_FFT_Complex lhs)
 {
 	Meow_FFT_Complex result =
 	{
@@ -476,7 +476,7 @@ inline Meow_FFT_Complex meow_negate(const Meow_FFT_Complex lhs)
 	return result;
 }
 
-inline Meow_FFT_Complex meow_conjugate(const Meow_FFT_Complex lhs)
+Meow_FFT_Complex meow_conjugate(const Meow_FFT_Complex lhs)
 {
 	Meow_FFT_Complex result =
 	{
@@ -487,7 +487,7 @@ inline Meow_FFT_Complex meow_conjugate(const Meow_FFT_Complex lhs)
 	return result;
 }
 
-inline Meow_FFT_Complex meow_mul
+Meow_FFT_Complex meow_mul
 (
 	const Meow_FFT_Complex lhs
 	, const Meow_FFT_Complex rhs
@@ -502,7 +502,7 @@ inline Meow_FFT_Complex meow_mul
 	return result;
 }
 
-inline Meow_FFT_Complex meow_mul_by_conjugate
+Meow_FFT_Complex meow_mul_by_conjugate
 (
 	const Meow_FFT_Complex lhs
 	, const Meow_FFT_Complex rhs
@@ -517,7 +517,7 @@ inline Meow_FFT_Complex meow_mul_by_conjugate
 	return result;
 }
 
-inline Meow_FFT_Complex meow_mul_by_j(const Meow_FFT_Complex lhs)
+Meow_FFT_Complex meow_mul_by_j(const Meow_FFT_Complex lhs)
 {
 	Meow_FFT_Complex result =
 	{
@@ -528,7 +528,7 @@ inline Meow_FFT_Complex meow_mul_by_j(const Meow_FFT_Complex lhs)
 	return result;
 }
 
-inline Meow_FFT_Complex meow_mulf
+Meow_FFT_Complex meow_mulf
 (
 	const Meow_FFT_Complex lhs
 	, float            rhs
@@ -2098,7 +2098,7 @@ void meow_recursive_fft_mixed_meow_radix_dit_i
 //
 // F(k) = Feven + (Wn(k) * Fodd) // <---- Remember ifft twiddles!, no * 0.5.
 
-inline void meow_mixer
+void meow_mixer
 (
 	unsigned                N_2
 	, Complex* w_2n
@@ -2137,7 +2137,7 @@ inline void meow_mixer
 	}
 }
 
-inline void meow_mixer_i
+void meow_mixer_i
 (
 	unsigned          N_2
 	, Complex*          w_2n
