@@ -389,7 +389,7 @@ size_t meow_fft_generate_workset(int N, Meow_FFT_Workset* workset)
 
 size_t meow_fft_generate_workset_real
 (
-	const int              N
+	int              N
 	, Meow_FFT_Workset_Real* workset
 )
 {
