@@ -25,6 +25,7 @@ set(HEADER
     XMath.h
     XRandom.h
     XSpline.h
+    XTween.h
 )
 
 set(SOURCE
@@ -37,6 +38,7 @@ set(SOURCE
     XIntersect.cpp
     XRandom.cpp
     XSpline.cpp
+    XTween.cpp
 )
 
 if(BUILD_LUA_LIBS)

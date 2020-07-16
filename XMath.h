@@ -7,6 +7,7 @@
 #include "XSpline.h"
 #include "XFFT.h"
 #include "XRandom.h"
+#include "XTween.h"
 
 namespace xmath
 {
