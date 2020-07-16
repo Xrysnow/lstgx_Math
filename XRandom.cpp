@@ -84,7 +84,7 @@ double Random::normal(double mu, double sigma)
 	return mu + z * sigma;
 }
 
-double Random::log_norml(double mu, double sigma)
+double Random::log_normal(double mu, double sigma)
 {
 	return std::exp(normal(mu, sigma));
 }

@@ -45,7 +45,7 @@ namespace xmath
 			 * If you take the natural logarithm of this distribution, you'll get a
 			 * normal distribution with mean mu and standard deviation sigma.
 			 * mu can have any value, and sigma must be greater than zero.*/
-			double log_norml(double mu, double sigma);
+			double log_normal(double mu, double sigma);
 			/** Exponential distribution.
 			 * lambda is 1.0 divided by the desired mean. It should be
 			 * nonzero. Returned values range from 0 to
