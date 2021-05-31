@@ -29,7 +29,7 @@ namespace xmath
 			//-------------------- real-valued distributions  -------------------
 
 			/** Uniform distribution.
-			 * Get a random number in the range [a, b]. */
+			 * Get a random number in the range [a, b). */
 			double uniform(double a, double b);
 			/** Triangular distribution.
 			 * Continuous distribution bounded by given lower and upper limits,

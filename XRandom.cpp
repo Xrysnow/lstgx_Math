@@ -1,6 +1,7 @@
 ﻿#include "XRandom.h"
 #include "XConstant.h"
 #include <cmath>
+#include <limits>
 
 using namespace xmath;
 using namespace xmath::random;
@@ -18,26 +19,29 @@ int64_t Random::range(uint64_t start)
 
 int64_t Random::range(int64_t start, int64_t stop, int64_t step)
 {
-	if (start == stop)return start;//empty range
+	if (start == stop)
+		return start; //empty range
 	const auto width = stop - start;
 	if (step == 1 && width > 0)
 		return start + below(width);
-	if (step == 1 || step == 0)return start;//empty range
+	if (step == 1 || step == 0)
+		return start; //empty range
 	const int64_t n = step > 0 ? double(width + step - 1) / step : double(width + step + 1) / step;
-	if (n <= 0)return start;//empty range
+	if (n <= 0)
+		return start; //empty range
 	return start + double(step) * below(n);
 }
 
 uint64_t Random::below(uint64_t n)
 {
 	if (n > MaxIntFromDouble || n == 0)
-		return _rand()*n;
+		return _rand() * n;
 	const auto rem = MaxIntFromDouble % n;
 	const auto limit = double(MaxIntFromDouble - rem) / MaxIntFromDouble;
 	auto r = _rand();
 	while (r >= limit)
 		r = _rand();
-	return uint64_t(r*MaxIntFromDouble) % n;
+	return uint64_t(r * MaxIntFromDouble) % n;
 }
 
 double Random::uniform(double a, double b)
@@ -105,7 +109,7 @@ double Random::vonMises(double mu, double kappa)
 	while (true)
 	{
 		const double u1 = _rand();
-		z = std::cos(pi*u1);
+		z = std::cos(pi * u1);
 		const double d = z / (r + z);
 		const double u2 = _rand();
 		if (u2 < 1 - d * d || u2 <= (1 - d)*std::exp(d))
@@ -114,9 +118,9 @@ double Random::vonMises(double mu, double kappa)
 	const auto q = 1.0 / r;
 	const auto f = (q + z) / (1 + q * z);
 	if (_rand() > 0.5)
-		return (mu + std::acos(f))*pix2;
+		return (mu + std::acos(f)) * pix2;
 	else
-		return (mu - std::acos(f))*pix2;
+		return (mu - std::acos(f)) * pix2;
 }
 
 double Random::gamma(double alpha, double beta)
@@ -131,14 +135,14 @@ double Random::gamma(double alpha, double beta)
 		while (true)
 		{
 			u1 = _rand();
-			while (u1 < 1e-7 || u1>1 - 1e-7)
+			while (u1 < 1e-7 || u1 > 1 - 1e-7)
 				u1 = _rand();
 			u2 = 1 - _rand();
 			v = std::log(u1 / (1.0 - u1)) / ainv;
 			x = alpha * std::exp(v);
 			z = u1 * u1*u2;
 			r = bbb + ccc * v - x;
-			if (r + SG_MAGICCONST - 4.5*z >= 0.0 || r >= std::log(z))
+			if (r + SG_MAGICCONST - 4.5 * z >= 0.0 || r >= std::log(z))
 				return x * beta;
 		}
 	}
@@ -180,7 +184,7 @@ double Random::gauss(double mu, double sigma)
 	if (!has_gauss_next)
 	{
 		const auto x2pi = pix2 * _rand();
-		const auto g2rad = std::sqrt(-2.0*std::log(1.0 - _rand()));
+		const auto g2rad = std::sqrt(-2.0 * std::log(1.0 - _rand()));
 		z = std::cos(x2pi)*g2rad;
 		_gauss_next = std::sin(x2pi)*g2rad;
 		has_gauss_next = true;
@@ -209,5 +213,5 @@ double Random::pareto(double alpha)
 
 double Random::weibull(double alpha, double beta)
 {
-	return alpha * std::pow(-std::log(_rand()), 1.0 / beta);
+	return alpha * std::pow(-std::log(1.0 - _rand()), 1.0 / beta);
 }
