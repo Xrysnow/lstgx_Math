@@ -53,9 +53,9 @@ namespace xmath
 		bool Ellipse_Triangle(const cocos2d::Vec2& p, float a, float b, float rot,
 			const cocos2d::Vec2& A, const cocos2d::Vec2& B, const cocos2d::Vec2& C);
 
-		bool Segment_Segment(const cocos2d::Vec2& A0, const cocos2d::Vec2& B0,
+		bool Segment_Segment(const cocos2d::Vec2& A0, const cocos2d::Vec2& b0,
 			const cocos2d::Vec2& A1, const cocos2d::Vec2& B1);
-		bool Triangle_Triangle(const cocos2d::Vec2& A0, const cocos2d::Vec2& B0, const cocos2d::Vec2& C0,
+		bool Triangle_Triangle(const cocos2d::Vec2& A0, const cocos2d::Vec2& b0, const cocos2d::Vec2& C0,
 			const cocos2d::Vec2& A1, const cocos2d::Vec2& B1, const cocos2d::Vec2& C1);
 
 		bool Parallelogram_Parallelogram(
