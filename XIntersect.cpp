@@ -260,7 +260,7 @@ bool intersect::Ellipse_Triangle(const Vec2& p, float a, float b, float rot,
 	const Vec2 A_(PA.x*c - PA.y*s, (PA.y*c + PA.x*s)*fac);
 	const Vec2 B_(PB.x*c - PB.y*s, (PB.y*c + PB.x*s)*fac);
 	const Vec2 C_(PC.x*c - PC.y*s, (PC.y*c + PC.x*s)*fac);
-	return Point_Triangle(Vec2::ZERO, A_, B_, C_);
+	return Circle_Triangle(Vec2::ZERO, a, A_, B_, C_);
 }
 
 bool intersect::Segment_Segment(const Vec2& A0, const Vec2& B0,
