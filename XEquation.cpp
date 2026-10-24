@@ -33,7 +33,7 @@ std::array<Complex, 3> equation::SolveCubic(double a, double b, double c, double
 	const auto delta = B * B - 4 * A*C;
 	if (A == 0.0&&B == 0.0)
 	{
-		const auto r = Complex(-c / b);
+		const auto r = Complex(-b / (3 * a));
 		return { r,r,r };
 	}
 	else if (delta > 0.0)
