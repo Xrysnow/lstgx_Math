@@ -119,10 +119,9 @@ double Random::vonMises(double mu, double kappa)
 	}
 	const auto q = 1.0 / r;
 	const auto f = (q + z) / (1 + q * z);
-	if (_rand() > 0.5)
-		return (mu + std::acos(f)) * pix2;
-	else
-		return (mu - std::acos(f)) * pix2;
+	const auto angle = mu + (_rand() > 0.5 ? std::acos(f) : -std::acos(f));
+	const auto result = std::fmod(angle, pix2);
+	return result < 0 ? result + pix2 : result;
 }
 
 double Random::gamma(double alpha, double beta)
