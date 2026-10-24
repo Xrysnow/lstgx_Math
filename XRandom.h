@@ -14,15 +14,13 @@ namespace xmath
 
 			//-------------------- integer methods  -------------------
 
-			/** Choose a random item from range(0, start).
-			 * It does not include the endpoint.
-			 * If range is empty, it returns start. */
-			int64_t range(uint64_t start);
 			/** Choose a random item from range(start, stop[, step]).
 			 * It does not include the endpoint.
 			 * If range is empty, it returns start. */
 			int64_t range(int64_t start, int64_t stop, int64_t step = 1);
 			/** Return a random int in the range [0, n).
+			 * Consumes exactly two _rand() calls, including when n is 0.
+			 * For positive n, scaling is unbiased only when n is a power of two.
 			 * Return 0 if n is 0. */
 			uint64_t below(uint64_t n);
 

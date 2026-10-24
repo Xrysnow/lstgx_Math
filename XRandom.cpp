@@ -6,42 +6,35 @@
 using namespace xmath;
 using namespace xmath::random;
 
-constexpr uint64_t MaxIntFromDouble = 9007199254740992;//2^53
 constexpr double NormalFactor = 1.71552776992141359296;//4*e^(-0.5)/sqrt(2)
 constexpr double log4 = 1.3862943611198906188;
 constexpr double SG_MAGICCONST = 1.0 + 1.504077396776274073373;
 constexpr double _e = 2.71828182845904523536028;
 
-int64_t Random::range(uint64_t start)
-{
-	return below(start);
-}
-
 int64_t Random::range(int64_t start, int64_t stop, int64_t step)
 {
-	if (start == stop)
+	if (step == 0 || (step > 0 ? start >= stop : start <= stop))
 		return start; //empty range
-	const auto width = stop - start;
-	if (step == 1 && width > 0)
-		return start + below(width);
-	if (step == 1 || step == 0)
-		return start; //empty range
-	const int64_t n = step > 0 ? double(width + step - 1) / step : double(width + step + 1) / step;
-	if (n <= 0)
-		return start; //empty range
-	return start + double(step) * below(n);
+	const auto width = step > 0 ? uint64_t(stop) - uint64_t(start) : uint64_t(start) - uint64_t(stop);
+	const auto stride = step > 0 ? uint64_t(step) : uint64_t(0) - uint64_t(step);
+	const auto n = 1 + (width - 1) / stride;
+	const auto offset = stride * below(n);
+	const auto value = step > 0 ? uint64_t(start) + offset : uint64_t(start) - offset;
+	if (value <= uint64_t(std::numeric_limits<int64_t>::max()))
+		return int64_t(value);
+	return -1 - int64_t(std::numeric_limits<uint64_t>::max() - value);
 }
 
 uint64_t Random::below(uint64_t n)
 {
-	if (n > MaxIntFromDouble || n == 0)
-		return _rand() * n;
-	const auto rem = MaxIntFromDouble % n;
-	const auto limit = double(MaxIntFromDouble - rem) / MaxIntFromDouble;
-	auto r = _rand();
-	while (r >= limit)
-		r = _rand();
-	return uint64_t(r * MaxIntFromDouble) % n;
+	const auto rHigh = uint64_t(_rand() * 4294967296.0);
+	const auto rLow = uint64_t(_rand() * 4294967296.0);
+	const auto nHigh = n >> 32;
+	const auto nLow = n & 0xffffffffULL;
+	const auto low = rLow * nLow;
+	const auto middle = rHigh * nLow + (low >> 32);
+	const auto high = rLow * nHigh + (middle & 0xffffffffULL);
+	return rHigh * nHigh + (middle >> 32) + (high >> 32);
 }
 
 double Random::uniform(double a, double b)
