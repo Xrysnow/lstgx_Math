@@ -508,7 +508,7 @@ void meow_dft_n_dit
 				else
 				{
 					sum_r += (in.r * w.r) + (in.j * w.j);
-					sum_j += (in.r * w.j) - (in.j * w.r);
+					sum_j += (in.j * w.r) - (in.r * w.j);
 				}
 			}
 
