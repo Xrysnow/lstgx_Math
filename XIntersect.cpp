@@ -302,11 +302,14 @@ bool intersect::Triangle_Triangle(const Vec2& A0, const Vec2& B0, const Vec2& C0
 		if (Point_Triangle(p - B1, E10, E11))
 			return true;
 	}
-	for (auto& p0 : { A0,C0 })
+	const Vec2 vertices0[] = { A0,B0,C0 };
+	const Vec2 vertices1[] = { A1,B1,C1 };
+	for (size_t i = 0; i < 3; ++i)
 	{
-		for (auto& p1 : { A1,C1 })
+		for (size_t j = 0; j < 3; ++j)
 		{
-			if (Segment_Segment(B0, p0, B1, p1))
+			if (Segment_Segment(vertices0[i], vertices0[(i + 1) % 3],
+				vertices1[j], vertices1[(j + 1) % 3]))
 				return true;
 		}
 	}
