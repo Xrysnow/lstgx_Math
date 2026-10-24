@@ -81,6 +81,8 @@ double Random::normal(double mu, double sigma)
 	{
 		const double u1 = _rand();
 		const double u2 = _rand();
+		if (u2 == 0.0)
+			continue;
 		z = NormalFactor * (u1 - 0.5) / u2;
 		if (z * z / 4 <= -std::log(u2))
 			break;
