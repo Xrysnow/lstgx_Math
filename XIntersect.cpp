@@ -271,25 +271,18 @@ bool intersect::Segment_Segment(const Vec2& A0, const Vec2& B0,
 	const auto A0B1 = B1 - A0;
 	const auto c1 = A0B0.cross(A0A1);
 	const auto c2 = A0B0.cross(A0B1);
-	if (c1 == 0.f&&c2 == 0.f)
-	{
-		if (A0B0.lengthSquared() == 0.f)
-			return false;
-		const auto t1 = (A0B0.x == 0.f) ? A0A1.y / A0B0.y : A0A1.x / A0B0.x;
-		const auto t2 = (A0B0.x == 0.f) ? A0B1.y / A0B0.y : A0B1.x / A0B0.x;
-		return (0 < t1&&t1 < 1) ||
-			(0 < t2&&t2 < 1) ||
-			(t1 < 0 && 1 < t2) ||
-			(t2 < 0 && 1 < t1);
-	}
-	if (c1*c2 > 0)
-		return false;
 	const auto A1B1 = B1 - A1;
-	//if (A1B1.lengthSquared() == 0.f)
-	//	return false;
 	const auto c3 = -A1B1.cross(A0A1);
 	const auto c4 = A1B1.cross(B0 - A1);
-	return c3 * c4 < 0;
+	if (c1 == 0.f && c2 == 0.f && c3 == 0.f && c4 == 0.f)
+	{
+		return std::max(std::min(A0.x, B0.x), std::min(A1.x, B1.x)) <=
+			std::min(std::max(A0.x, B0.x), std::max(A1.x, B1.x)) &&
+			std::max(std::min(A0.y, B0.y), std::min(A1.y, B1.y)) <=
+			std::min(std::max(A0.y, B0.y), std::max(A1.y, B1.y));
+	}
+	return ((c1 <= 0 && c2 >= 0) || (c1 >= 0 && c2 <= 0)) &&
+		((c3 <= 0 && c4 >= 0) || (c3 >= 0 && c4 <= 0));
 }
 
 bool intersect::Triangle_Triangle(const Vec2& A0, const Vec2& B0, const Vec2& C0,
