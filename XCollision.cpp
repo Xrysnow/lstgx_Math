@@ -11,10 +11,11 @@ using namespace xmath::collision;
 using namespace xmath::intersect;
 
 #define PARAM const Vec2& p0, float a0, float b0, float rot0, const Vec2& p1, float a1, float b1, float rot1
+// Duplicate an endpoint when a is zero, preserving exact degeneracy after translation.
 #define ToTriangle(N) float s##N, c##N; SinCos(rot##N, s##N, c##N);\
 	const Vec2 hda##N(c##N * a##N, s##N * a##N);\
 	const Vec2 db##N(-s##N * b##N, c##N * b##N);\
-	const auto A##N = p##N + hda##N;\
+	const auto A##N = a##N == 0.f ? p##N + db##N : p##N + hda##N;\
 	const auto B##N = p##N - hda##N + db##N;\
 	const auto C##N = p##N - hda##N - db##N;
 

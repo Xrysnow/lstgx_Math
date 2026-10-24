@@ -1,6 +1,7 @@
 ﻿#include "XIntersect.h"
 #include "XDistance.h"
 #include "XMath.h"
+#include "XMathInternal.h"
 
 using namespace xmath;
 using namespace cocos2d;
@@ -44,11 +45,15 @@ bool intersect::Point_Ellipse(const Vec2& p0, const Vec2& p1, float a, float b, 
 bool intersect::Point_Triangle(const Vec2& p,
 	const Vec2& A, const Vec2& B, const Vec2& C)
 {
+	if (detail::collinear(A, B, C))
+		return detail::degenerateTriangleDistance(p, A, B, C) == 0.0;
 	return Point_Triangle(p - B, A - B, C - B);
 }
 
 bool intersect::Point_Triangle(const Vec2& P, const Vec2& E0, const Vec2& E1)
 {
+	if (detail::collinear(Vec2::ZERO, E0, E1))
+		return detail::degenerateTriangleDistance(P, Vec2::ZERO, E0, E1) == 0.0;
 	const auto _den = E0.y*E1.x - E0.x*E1.y;
 	const auto s = (P.y*E1.x - P.x*E1.y) / _den;
 	const auto t = (P.x*E0.y - P.y*E0.x) / _den;
@@ -297,18 +302,19 @@ bool intersect::Segment_Segment(const Vec2& A0, const Vec2& B0,
 bool intersect::Triangle_Triangle(const Vec2& A0, const Vec2& B0, const Vec2& C0,
 	const Vec2& A1, const Vec2& B1, const Vec2& C1)
 {
+	const bool degenerate = detail::collinear(A0, B0, C0) || detail::collinear(A1, B1, C1);
 	const auto E00 = A0 - B0;
 	const auto E01 = C0 - B0;
 	for (auto& p : { A1,B1,C1 })
 	{
-		if (Point_Triangle(p - B0, E00, E01))
+		if (degenerate ? detail::pointInClosedTriangle(p, A0, B0, C0) : Point_Triangle(p - B0, E00, E01))
 			return true;
 	}
 	const auto E10 = A1 - B1;
 	const auto E11 = C1 - B1;
 	for (auto& p : { A0,B0,C0 })
 	{
-		if (Point_Triangle(p - B1, E10, E11))
+		if (degenerate ? detail::pointInClosedTriangle(p, A1, B1, C1) : Point_Triangle(p - B1, E10, E11))
 			return true;
 	}
 	const Vec2 vertices0[] = { A0,B0,C0 };
@@ -317,8 +323,11 @@ bool intersect::Triangle_Triangle(const Vec2& A0, const Vec2& B0, const Vec2& C0
 	{
 		for (size_t j = 0; j < 3; ++j)
 		{
-			if (Segment_Segment(vertices0[i], vertices0[(i + 1) % 3],
-				vertices1[j], vertices1[(j + 1) % 3]))
+			const auto& a = vertices0[i];
+			const auto& b = vertices0[(i + 1) % 3];
+			const auto& c = vertices1[j];
+			const auto& d = vertices1[(j + 1) % 3];
+			if (degenerate ? detail::triangleEdgesIntersect(a, b, c, d) : Segment_Segment(a, b, c, d))
 				return true;
 		}
 	}

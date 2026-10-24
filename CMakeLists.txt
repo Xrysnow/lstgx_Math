@@ -30,6 +30,7 @@ set(HEADER
     XDistance.h
     XEquation.h
     XFFT.h
+    XMathInternal.h
     XIntersect.h
     XMath.h
     XRandom.h

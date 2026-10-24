@@ -1,5 +1,6 @@
 ﻿#include "XDistance.h"
 #include "XMath.h"
+#include "XMathInternal.h"
 
 using namespace cocos2d;
 using namespace xmath;
@@ -7,6 +8,8 @@ using namespace xmath;
 float distance::Point_Triangle(const Vec2& p,
 	const Vec2& A, const Vec2& B, const Vec2& C)
 {
+	if (detail::collinear(A, B, C))
+		return float(detail::degenerateTriangleDistance(p, A, B, C));
 	const auto AX = p - A;
 	const auto AB = B - A;
 	const auto AC = C - A;
@@ -49,6 +52,8 @@ float distance::Point_Triangle(const Vec2& p,
 float distance::Point_Triangle2(const Vec2& p,
 	const Vec2& A, const Vec2& B, const Vec2& C)
 {
+	if (detail::collinear(A, B, C))
+		return float(detail::degenerateTriangleDistance(p, A, B, C));
 	const auto E0 = A - B;
 	const auto E1 = C - B;
 	const auto P = p - B;
