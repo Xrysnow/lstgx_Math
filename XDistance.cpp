@@ -281,30 +281,52 @@ float distance::Point_Ellipse2(const Vec2& p0,
 	const auto p = p0 - p1;
 	float tCos, tSin;
 	SinCos(-rotation, tSin, tCos);
-	const auto x = std::abs(p.x*tCos - p.y*tSin);
-	const auto y = std::abs(p.y*tCos + p.x*tSin);
-	if (x * x / (a * a) + y * y / (b * b) <= 1.0)
+	const auto x = std::abs(double(p.x) * tCos - double(p.y) * tSin);
+	const auto y = std::abs(double(p.y) * tCos + double(p.x) * tSin);
+	const auto a2 = double(a) * a;
+	const auto b2 = double(b) * b;
+	if (x * x / a2 + y * y / b2 <= 1.0)
 		return 0.f;
-	const auto a2 = a * a;
-	const auto b2 = b * b;
 	const auto ax = a * x;
 	const auto by = b * y;
-	const auto tmp = b2 - a2;
-	float theta = xmath::pi_4 - (((b2 - a2) / xmath::sqrt2) + ax - by) / (ax + by);
-	theta = std::max(0.f, std::min(theta, float(xmath::pi_2)));
-	float ct, st;
-	SinCos(theta, st, ct);
-	for (auto i = 0; i < 2; ++i)
+	double lo = 0.0;
+	double hi = std::sqrt(ax * ax + by * by);
+	double t = 0.0;
+	while (hi - lo > 1e-4 * hi)
 	{
-		const auto dtheta =
-			(tmp * st*ct + ax * st - by * ct) /
-			(tmp *(ct*ct - st * st) + ax * ct + by * st);
-		if (std::abs(dtheta) < 1e-5f)
+		const auto previousWidth = hi - lo;
+		const auto da = t + a2;
+		const auto db = t + b2;
+		const auto u = ax / da;
+		const auto v = by / db;
+		const auto u2 = u * u;
+		const auto v2 = v * v;
+		const auto norm2 = u2 + v2;
+		const auto f = norm2 - 1.0;
+		if (f > 0.0)
+			lo = t;
+		else
+			hi = t;
+		const auto offset = f / (std::sqrt(norm2) + 1.0);
+		const auto boundA = t + offset * da;
+		const auto boundB = t + offset * db;
+		const auto newLo = std::max(lo, std::min(boundA, boundB));
+		const auto newHi = std::min(hi, std::max(boundA, boundB));
+		if (newLo <= newHi)
+		{
+			lo = newLo;
+			hi = newHi;
+		}
+		if (hi - lo <= 1e-4 * hi)
 			break;
-		theta = theta - dtheta;
-		SinCos(theta, st, ct);
+		const auto candidate = t + f / (2.0 * (u2 / da + v2 / db));
+		if (candidate > lo && candidate < hi && hi - lo <= 0.5 * previousWidth)
+			t = candidate;
+		else
+			t = (lo + hi) * 0.5;
 	}
-	const auto dx = a * ct - x;
-	const auto dy = b * st - y;
-	return std::sqrt(dx * dx + dy * dy);
+	t = (lo + hi) * 0.5;
+	const auto dx = x * (t / (t + a2));
+	const auto dy = y * (t / (t + b2));
+	return float(std::sqrt(dx * dx + dy * dy));
 }
