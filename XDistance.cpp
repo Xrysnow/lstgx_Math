@@ -255,6 +255,8 @@ float distance::Point_Ellipse(const Vec2& p0,
 	const auto y = p.y;
 	if (x * x / (a * a) + y * y / (b * b) <= 1.0)
 		return 0.f;
+	if (y == 0.f)
+		return std::abs(x) - a;
 	const auto tmp = (a * a - b * b) * 2;
 	const auto tmp2 = 2 * a*x;
 	const auto tmp3 = b * y;
