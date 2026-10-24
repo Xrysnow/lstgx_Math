@@ -1,12 +1,8 @@
 ﻿#include "XDistance.h"
-#include "XEquation.h"
-#include "XConstant.h"
 #include "XMath.h"
-#include <limits>
 
 using namespace cocos2d;
 using namespace xmath;
-using namespace xmath::equation;
 
 float distance::Point_Triangle(const Vec2& p,
 	const Vec2& A, const Vec2& B, const Vec2& C)
@@ -247,32 +243,82 @@ float distance::Point_Parallelogram(const Vec2& p0,
 float distance::Point_Ellipse(const Vec2& p0,
 	const Vec2& p1, float a, float b, float rotation)
 {
+	const auto px = double(p0.x) - p1.x;
+	const auto py = double(p0.y) - p1.y;
 	if (a == b)
-		return Point_Circle(p0, p1, a);
-	auto p = p0 - p1;
-	p.rotate(Vec2::ZERO, -rotation);
-	const auto x = p.x;
-	const auto y = p.y;
-	if (x * x / (a * a) + y * y / (b * b) <= 1.0)
-		return 0.f;
-	if (y == 0.f)
-		return std::abs(x) - a;
-	const auto tmp = (a * a - b * b) * 2;
-	const auto tmp2 = 2 * a*x;
-	const auto tmp3 = b * y;
-	auto s = SolveQuartic(1.0, (tmp2 + tmp) / tmp3, 0.0, (tmp2 - tmp) / tmp3, -1.0);
-	float ret = std::numeric_limits<float>::max();
-	for (auto i = 0; i < 4; ++i)
 	{
-		if (std::abs(s[i].imag()) < std::numeric_limits<float>::epsilon())
-		{
-			const auto t = s[i].real();
-			const auto tmp_ = 1 + t * t;
-			ret = std::min(ret, Point_Point(p,
-				Vec2(a * (1 - t * t) / tmp_, b * 2 * t / tmp_)));
-		}
+		if (a == 0.f)
+			return float(std::hypot(px, py));
+		const auto major = std::max(std::abs(px), std::abs(py));
+		const auto minor = std::min(std::abs(px), std::abs(py));
+		const auto excess = (major - a) * (major + a) + minor * minor;
+		return float(std::max(excess / (std::hypot(px, py) + a), 0.0));
 	}
-	return ret;
+	const auto tCos = std::cos(double(rotation));
+	const auto tSin = std::sin(double(rotation));
+	const auto x = std::abs(px * tCos + py * tSin);
+	const auto y = std::abs(py * tCos - px * tSin);
+	if (a == 0.f || b == 0.f)
+		return float(std::hypot(std::max(x - a, 0.0), std::max(y - b, 0.0)));
+	if (y == 0.0)
+		return float(std::max(x - a, 0.0));
+	if (x == 0.0)
+		return float(std::max(y - b, 0.0));
+
+	const auto a2 = double(a) * a;
+	const auto b2 = double(b) * b;
+	const auto ax = a * x;
+	const auto by = b * y;
+	const auto axExcess = a * (x - a);
+	const auto byExcess = b * (y - b);
+	double lo = 0.0;
+	double hi = std::hypot(ax, by);
+	double t = 0.0;
+	while (hi - lo > 1e-8 * hi)
+	{
+		const auto previousWidth = hi - lo;
+		const auto da = t + a2;
+		const auto db = t + b2;
+		const auto u = ax / da;
+		const auto v = by / db;
+		const auto u2 = u * u;
+		const auto v2 = v * v;
+		const auto norm2 = u2 + v2;
+		const auto f = u > v ? (axExcess - t) / da * (u + 1.0) + v2
+			: (byExcess - t) / db * (v + 1.0) + u2;
+		if (t == 0.0 && f <= 0.0)
+			return 0.f;
+		if (f == 0.0)
+		{
+			lo = hi = t;
+			break;
+		}
+		if (f > 0.0)
+			lo = t;
+		else
+			hi = t;
+		const auto offset = f / (std::sqrt(norm2) + 1.0);
+		const auto boundA = t + offset * da;
+		const auto boundB = t + offset * db;
+		const auto newLo = std::max(lo, std::min(boundA, boundB));
+		const auto newHi = std::min(hi, std::max(boundA, boundB));
+		if (newLo <= newHi)
+		{
+			lo = newLo;
+			hi = newHi;
+		}
+		if (hi - lo <= 1e-8 * hi)
+			break;
+		const auto candidate = t + f / (2.0 * (u2 / da + v2 / db));
+		if (candidate > lo && candidate < hi && hi - lo <= 0.5 * previousWidth)
+			t = candidate;
+		else
+			t = (lo + hi) * 0.5;
+	}
+	t = (lo + hi) * 0.5;
+	const auto dx = x * (t / (t + a2));
+	const auto dy = y * (t / (t + b2));
+	return float(std::hypot(dx, dy));
 }
 
 float distance::Point_Ellipse2(const Vec2& p0,

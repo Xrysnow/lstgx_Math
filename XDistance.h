@@ -77,10 +77,10 @@ namespace xmath
 			const cocos2d::Vec2& p1, float halfW, float halfH, float rotation);
 		float Point_Parallelogram(const cocos2d::Vec2& p0,
 			const cocos2d::Vec2& p1, const cocos2d::Vec2& halfDiagA, const cocos2d::Vec2& halfDiagB);
-		// direct, slow
+		// high accuracy
 		float Point_Ellipse(const cocos2d::Vec2& p0,
 			const cocos2d::Vec2& p1, float a, float b, float rotation);
-		// iterative, 5x faster
+		// faster
 		float Point_Ellipse2(const cocos2d::Vec2& p0,
 			const cocos2d::Vec2& p1, float a, float b, float rotation);
 	}
