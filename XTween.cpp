@@ -1,6 +1,7 @@
 ﻿#include "XTween.h"
 #include "XConstant.h"
 #include <cmath>
+#include <limits>
 
 using namespace xmath;
 
@@ -88,14 +89,22 @@ float tween::sineInOut(float t)
 
 float tween::expoIn(float t, float b)
 {
-	if (b == 1)
+	if (!(b > 0) || !std::isfinite(b))
+		return std::numeric_limits<float>::quiet_NaN();
+	if (b == 1 || t == 0 || t == 1)
 		return t;
-	return (std::pow(b, t) - 1) / (b - 1);
+	const double base = b;
+	return static_cast<float>(std::expm1(double(t) * std::log(base)) / (base - 1));
 }
 
 float tween::expoOut(float t, float b)
 {
-	return 1 - tween::expoIn(1 - t, b);
+	if (!(b > 0) || !std::isfinite(b))
+		return std::numeric_limits<float>::quiet_NaN();
+	if (b == 1 || t == 0 || t == 1)
+		return t;
+	const double base = b;
+	return static_cast<float>(-base * std::expm1(-double(t) * std::log(base)) / (base - 1));
 }
 
 float tween::expoInOut(float t, float b)
