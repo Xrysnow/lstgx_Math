@@ -75,6 +75,8 @@ namespace xmath
 			double weibull(double alpha, double beta);
 
 		protected:
+			// Overrides of setSeed() must call _clear_state()
+			void _clear_state();
 			virtual double _rand() = 0;
 			bool has_gauss_next = false;
 			double _gauss_next = 0.0;

@@ -11,6 +11,12 @@ constexpr double log4 = 1.3862943611198906188;
 constexpr double SG_MAGICCONST = 1.0 + 1.504077396776274073373;
 constexpr double _e = 2.71828182845904523536028;
 
+void Random::_clear_state()
+{
+	has_gauss_next = false;
+	_gauss_next = 0.0;
+}
+
 int64_t Random::range(int64_t start, int64_t stop, int64_t step)
 {
 	if (step == 0 || (step > 0 ? start >= stop : start <= stop))
