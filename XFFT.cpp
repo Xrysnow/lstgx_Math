@@ -43,7 +43,7 @@ void xmath::fft::getParzenWindow(size_t N, float* window)
 		if (t <= p)
 			window[i] = 1 - 6 * t*t*(1 - t);
 		else
-			window[i] = 2 * t*t*t;
+			window[i] = 2 * (1 - t)*(1 - t)*(1 - t);
 	}
 }
 
@@ -55,7 +55,7 @@ void xmath::fft::getGeneralCosineWindow(size_t N, float* window, size_t Nparam, 
 	{
 		window[i] = param[0];
 		for (size_t j = 1; j < Nparam; ++j)
-			window[i] += param[j] * std::cos(float(pix2)*i*j / N1);
+			window[i] += param[j] * std::cos((float(pix2)*i / N1 - float(pi))*j);
 	}
 }
 
@@ -149,7 +149,8 @@ void xmath::fft::fft(size_t N, void* workset, float* in, float* outComplex, floa
 	if (outNorm)
 	{
 		const int halfN = N / 2;
-		for (auto i = 0; i < halfN; ++i)
+		outNorm[0] = std::abs(out[0].r) / N;
+		for (auto i = 1; i < halfN; ++i)
 		{
 			const float r = out[i].r;
 			const float j = out[i].j;

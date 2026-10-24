@@ -28,6 +28,7 @@ namespace xmath
 		void getBartlettWindow(size_t N, float* window);
 		void getParzenWindow(size_t N, float* window);
 
+		/** Coefficients use the centered cosine phase [-pi, pi] (typically all positive). */
 		void getGeneralCosineWindow(size_t N, float* window, size_t Nparam, float* param);
 		void getGeneralHammingWindow(size_t N, float* window, float alpha);
 		void getGeneralGaussianWindow(size_t N, float* window, float p, float sigma);
@@ -48,7 +49,8 @@ namespace xmath
 		size_t getNeededWorksetSize(size_t N);
 		/** in[N], outComplex[N*2] */
 		void fft(size_t N, void* workset, float* in, float* outComplex);
-		/** in[N], outComplex[N*2], outNorm[N/2] */
+		/** in[N], outComplex[N*2], outNorm[N/2]; outNorm[k] = abs(X[k])/N for k < N/2.
+		 * Nyquist is excluded from outNorm and stored in outComplex[1]. */
 		void fft(size_t N, void* workset, float* in, float* outComplex, float* outNorm);
 	}
 }
