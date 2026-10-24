@@ -206,29 +206,38 @@ bool intersect::Ellipse_Ellipse(
 		return Circle_Ellipse(p0, a0, p1, a1, b1, rot1);
 	if (a1 == b1)
 		return Circle_Ellipse(p1, a1, p0, a0, b0, rot0);
-	float s, c;
-	SinCos(rot1 - rot0, s, c);
+	const auto angle = double(rot1) - rot0;
+	const auto s = std::sin(angle);
+	const auto c = std::cos(angle);
 	const auto c2 = c * c;
 	const auto s2 = s * s;
 	const auto sc = s * c;
-	const auto a_ = 1 / (a1*a1);
-	const auto b_ = 1 / (b1*b1);
-	const auto m00 = (a_ * c2 + b_ * s2) * (a0*a0);
-	const auto m11 = (b_ * c2 + a_ * s2) * (b0*b0);
-	const auto m01 = (a_ - b_)*sc * (a0*b0);
+	const auto a_ = 1.0 / (double(a1) * a1);
+	const auto b_ = 1.0 / (double(b1) * b1);
+	const auto m00 = (a_ * c2 + b_ * s2) * (double(a0) * a0);
+	const auto m11 = (b_ * c2 + a_ * s2) * (double(b0) * b0);
+	const auto m01 = (a_ - b_) * sc * (double(a0) * b0);
 	const auto sum = m00 + m11;
 	const auto tmp = m00 - m11;
-	const auto dif = std::sqrt(tmp*tmp + 4 * m01*m01);
-	const auto rot = dif == 0.f ? 0.f : 0.5f * std::atan2(2 * m01, tmp);
-	float s0, c0;
-	SinCos(-rot0, s0, c0);
-	const auto d = p1 - p0;
-	auto d_ = Vec2(d.x*c0 - d.y*s0, d.y*c0 + d.x*s0);
-	d_.x /= a0;
-	d_.y /= b0;
-	return distance::Point_Ellipse2(
-		Vec2::ZERO, d_,
-		std::sqrt(2 / (sum + dif)), std::sqrt(2 / (sum - dif)), rot) <= 1;
+	const auto dif = std::hypot(tmp, 2.0 * m01);
+	const auto lambdaMax = (sum + dif) * 0.5;
+	const auto areaRatio = (double(a0) / a1) * (double(b0) / b1);
+	const auto lambdaMin = (areaRatio / lambdaMax) * areaRatio;
+	if (!(lambdaMin > 0.0) || !std::isfinite(lambdaMin) ||
+		!(lambdaMax > 0.0) || !std::isfinite(lambdaMax))
+		return false;
+	const auto rot = dif == 0.0 ? 0.0 : 0.5 * std::atan2(2.0 * m01, tmp);
+	const auto s0 = std::sin(double(rot0));
+	const auto c0 = std::cos(double(rot0));
+	const auto dx = double(p1.x) - p0.x;
+	const auto dy = double(p1.y) - p0.y;
+	const auto x = (dx * c0 + dy * s0) / a0;
+	const auto y = (dy * c0 - dx * s0) / b0;
+	const auto sr = std::sin(rot);
+	const auto cr = std::cos(rot);
+	return distance::Point_Ellipse2(Vec2::ZERO,
+		Vec2(float(x * cr + y * sr), float(y * cr - x * sr)),
+		float(1.0 / std::sqrt(lambdaMax)), float(1.0 / std::sqrt(lambdaMin)), 0.f) <= 1;
 }
 
 bool intersect::Ellipse_Diamond(const Vec2& p0, float a0, float b0, float rot0,
